@@ -1,0 +1,38 @@
+{
+  "name": "plantry",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "AI-driven project management tool integrated with Telegram",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore"
+  },
+  "dependencies": {
+    "@headlessui/vue": "^1.7.14",
+    "@heroicons/vue": "^2.0.18",
+    "@vueuse/core": "^10.3.0",
+    "axios": "^1.4.0",
+    "chart.js": "^4.3.0",
+    "dayjs": "^1.11.9",
+    "marked": "^5.1.2",
+    "pinia": "^2.1.6",
+    "tailwindcss": "^3.3.3",
+    "vconsole": "^3.15.1",
+    "vue": "^3.3.4",
+    "vue-chartjs": "^5.2.0",
+    "vue-draggable-plus": "^0.2.5",
+    "vue-router": "^4.2.4"
+  },
+  "devDependencies": {
+    "@tailwindcss/forms": "^0.5.4",
+    "@vitejs/plugin-vue": "^4.2.3",
+    "autoprefixer": "^10.4.14",
+    "eslint": "^8.45.0",
+    "eslint-plugin-vue": "^9.15.1",
+    "postcss": "^8.4.27",
+    "vite": "^4.4.5"
+  }
+}
