@@ -54,6 +54,9 @@
               @change="onTaskMove"
               class="min-h-full space-y-3"
               item-key="id"
+              :animation="150"
+              ghost-class="sortable-ghost"
+              chosen-class="sortable-chosen"
             >
               <template #item="{ element }">
                 <TaskCard 
@@ -83,6 +86,9 @@
               @change="onTaskMove"
               class="min-h-full space-y-3"
               item-key="id"
+              :animation="150"
+              ghost-class="sortable-ghost"
+              chosen-class="sortable-chosen"
             >
               <template #item="{ element }">
                 <TaskCard 
@@ -112,6 +118,9 @@
               @change="onTaskMove"
               class="min-h-full space-y-3"
               item-key="id"
+              :animation="150"
+              ghost-class="sortable-ghost"
+              chosen-class="sortable-chosen"
             >
               <template #item="{ element }">
                 <TaskCard 
@@ -141,6 +150,9 @@
               @change="onTaskMove"
               class="min-h-full space-y-3"
               item-key="id"
+              :animation="150"
+              ghost-class="sortable-ghost"
+              chosen-class="sortable-chosen"
             >
               <template #item="{ element }">
                 <TaskCard 
@@ -376,9 +388,24 @@ const handleTaskDelete = async (taskId) => {
 
 // 初始化数据
 onMounted(async () => {
-  await teamsStore.loadMyTeams()
-  if (teamsStore.currentTeam) {
-    await tasksStore.initialize(teamsStore.currentTeam.id)
+  try {
+    console.log('Board - 开始初始化数据')
+    await teamsStore.loadMyTeams()
+    console.log('Board - 团队数据加载完成:', teamsStore.currentTeam)
+    
+    if (teamsStore.currentTeam) {
+      await tasksStore.initialize(teamsStore.currentTeam.id)
+      console.log('Board - 任务数据加载完成:', tasksStore.tasks.length)
+    } else {
+      console.log('Board - 使用默认团队数据')
+      await tasksStore.initialize('demo-team')
+    }
+  } catch (error) {
+    console.error('Board - 初始化失败:', error)
+    // 确保有默认数据
+    if (!tasksStore.tasks.length) {
+      await tasksStore.initialize('demo-team')
+    }
   }
 })
 </script> 

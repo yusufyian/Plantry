@@ -123,12 +123,21 @@ export const useTasksStore = defineStore('tasks', () => {
   
   // Computed
   const tasksByStatus = computed(() => {
-    return {
-      seed: tasks.value.filter(task => task.status === ENUMS.TASK_STATUS.SEED),
-      sprout: tasks.value.filter(task => task.status === ENUMS.TASK_STATUS.SPROUT),
-      blossom: tasks.value.filter(task => task.status === ENUMS.TASK_STATUS.BLOSSOM),
-      done: tasks.value.filter(task => task.status === ENUMS.TASK_STATUS.DONE)
+    const result = {
+      seed: tasks.value.filter(task => task.status === ENUMS.TASK_STATUS.SEED) || [],
+      sprout: tasks.value.filter(task => task.status === ENUMS.TASK_STATUS.SPROUT) || [],
+      blossom: tasks.value.filter(task => task.status === ENUMS.TASK_STATUS.BLOSSOM) || [],
+      done: tasks.value.filter(task => task.status === ENUMS.TASK_STATUS.DONE) || []
     }
+    
+    // 确保每个状态都有数组
+    Object.keys(result).forEach(key => {
+      if (!Array.isArray(result[key])) {
+        result[key] = []
+      }
+    })
+    
+    return result
   })
   
   const pendingExtractions = computed(() => {
