@@ -12,6 +12,21 @@
             <PlusIcon class="w-4 h-4 mr-2" />
             新建任务
           </button>
+          <button @click="testNavigation" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors">
+            测试导航
+          </button>
+          <button @click="testSinglePage('/inbox')" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors">
+            测试任务箱
+          </button>
+          <button @click="testSinglePage('/analytics')" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors">
+            测试分析
+          </button>
+          <button @click="testSinglePage('/simple-analytics')" class="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600 transition-colors">
+            测试简化分析
+          </button>
+          <button @click="testComponentLoading('/analytics')" class="bg-purple-500 text-white px-4 py-2 rounded-lg hover:bg-purple-600 transition-colors">
+            测试组件加载
+          </button>
           <div class="flex items-center space-x-2">
             <button 
               @click="viewMode = 'kanban'"
@@ -57,13 +72,16 @@
               :animation="150"
               ghost-class="sortable-ghost"
               chosen-class="sortable-chosen"
+              :disabled="false"
+              :force-fallback="true"
+              :fallback-class="'sortable-fallback'"
+              :fallback-on-body="true"
             >
               <template #item="{ element }">
-                <TaskCard 
-                  :task="element" 
-                  @click="openTaskDetail"
-                  @edit="openTaskEdit"
-                />
+                <div class="bg-white p-3 rounded border shadow-sm hover:shadow-md transition-shadow">
+                  <h4 class="font-medium text-gray-900">{{ element.title }}</h4>
+                  <p class="text-sm text-gray-600">{{ element.description }}</p>
+                </div>
               </template>
             </VueDraggable>
           </div>
@@ -89,13 +107,16 @@
               :animation="150"
               ghost-class="sortable-ghost"
               chosen-class="sortable-chosen"
+              :disabled="false"
+              :force-fallback="true"
+              :fallback-class="'sortable-fallback'"
+              :fallback-on-body="true"
             >
               <template #item="{ element }">
-                <TaskCard 
-                  :task="element" 
-                  @click="openTaskDetail"
-                  @edit="openTaskEdit"
-                />
+                <div class="bg-white p-3 rounded border shadow-sm hover:shadow-md transition-shadow">
+                  <h4 class="font-medium text-gray-900">{{ element.title }}</h4>
+                  <p class="text-sm text-gray-600">{{ element.description }}</p>
+                </div>
               </template>
             </VueDraggable>
           </div>
@@ -121,13 +142,16 @@
               :animation="150"
               ghost-class="sortable-ghost"
               chosen-class="sortable-chosen"
+              :disabled="false"
+              :force-fallback="true"
+              :fallback-class="'sortable-fallback'"
+              :fallback-on-body="true"
             >
               <template #item="{ element }">
-                <TaskCard 
-                  :task="element" 
-                  @click="openTaskDetail"
-                  @edit="openTaskEdit"
-                />
+                <div class="bg-white p-3 rounded border shadow-sm hover:shadow-md transition-shadow">
+                  <h4 class="font-medium text-gray-900">{{ element.title }}</h4>
+                  <p class="text-sm text-gray-600">{{ element.description }}</p>
+                </div>
               </template>
             </VueDraggable>
           </div>
@@ -153,13 +177,16 @@
               :animation="150"
               ghost-class="sortable-ghost"
               chosen-class="sortable-chosen"
+              :disabled="false"
+              :force-fallback="true"
+              :fallback-class="'sortable-fallback'"
+              :fallback-on-body="true"
             >
               <template #item="{ element }">
-                <TaskCard 
-                  :task="element" 
-                  @click="openTaskDetail"
-                  @edit="openTaskEdit"
-                />
+                <div class="bg-white p-3 rounded border shadow-sm hover:shadow-md transition-shadow">
+                  <h4 class="font-medium text-gray-900">{{ element.title }}</h4>
+                  <p class="text-sm text-gray-600">{{ element.description }}</p>
+                </div>
               </template>
             </VueDraggable>
           </div>
@@ -262,13 +289,14 @@ import { ENUMS } from '../config/database.js'
 import { PlusIcon } from '@heroicons/vue/24/outline'
 import dayjs from 'dayjs'
 import { VueDraggable } from 'vue-draggable-plus'
-import TaskCard from '../components/common/TaskCard.vue'
 import TaskModal from '../components/tasks/TaskModal.vue'
 import TaskDetailModal from '../components/tasks/TaskDetailModal.vue'
+import { useRouter } from 'vue-router'
 
 const tasksStore = useTasksStore()
 const teamsStore = useTeamsStore()
 const { notify } = useNotifications()
+const router = useRouter()
 
 const viewMode = ref('kanban')
 const showCreateModal = ref(false)
@@ -386,11 +414,127 @@ const handleTaskDelete = async (taskId) => {
   }
 }
 
+const testNavigation = async () => {
+  console.log('开始测试关键页面导航...')
+  
+  const pages = [
+    { name: '任务箱', path: '/inbox' },
+    { name: '分析', path: '/analytics' },
+    { name: '设置', path: '/settings' },
+    { name: 'Telegram', path: '/telegram' }
+  ]
+  
+  for (const page of pages) {
+    console.log(`\n=== 测试页面: ${page.name} ===`)
+    
+    try {
+      console.log(`正在跳转到 ${page.path}...`)
+      await router.push(page.path)
+      console.log(`✅ ${page.name} 页面跳转成功`)
+      
+      // 等待页面加载
+      await new Promise(resolve => setTimeout(resolve, 2000))
+      
+      // 返回看板页面
+      console.log('返回看板页面...')
+      await router.push('/board')
+      await new Promise(resolve => setTimeout(resolve, 1000))
+      
+    } catch (error) {
+      console.error(`❌ ${page.name} 页面跳转失败:`, error)
+      // 返回看板页面
+      await router.push('/board')
+    }
+  }
+  
+  console.log('\n=== 导航测试完成 ===')
+}
+
+const testSinglePage = async (path) => {
+  console.log(`\n=== 测试单个页面: ${path} ===`)
+  
+  try {
+    console.log(`正在跳转到 ${path}...`)
+    console.log('当前路由:', router.currentRoute.value.path)
+    
+    await router.push(path)
+    console.log(`✅ ${path} 页面跳转成功`)
+    console.log('跳转后路由:', router.currentRoute.value.path)
+    
+    // 检查页面内容
+    setTimeout(() => {
+      const pageTitle = document.title
+      const pageContent = document.body.innerHTML
+      console.log('页面标题:', pageTitle)
+      console.log('页面内容长度:', pageContent.length)
+      console.log('页面是否包含内容:', pageContent.includes('效率分析') || pageContent.includes('任务箱') || pageContent.includes('设置'))
+      
+      // 检查是否有错误信息
+      const errorElements = document.querySelectorAll('.error, [class*="error"], [id*="error"]')
+      console.log('页面中的错误元素数量:', errorElements.length)
+      
+      // 检查Vue组件是否正常渲染
+      const vueElements = document.querySelectorAll('[data-v-]')
+      console.log('Vue组件元素数量:', vueElements.length)
+      
+      // 检查页面是否为空
+      const mainContent = document.querySelector('main')
+      if (mainContent) {
+        console.log('主内容区域HTML:', mainContent.innerHTML.substring(0, 200) + '...')
+      }
+    }, 1000)
+    
+    // 等待页面加载
+    await new Promise(resolve => setTimeout(resolve, 2000))
+    
+    // 返回看板页面
+    console.log('返回看板页面...')
+    await router.push('/board')
+    await new Promise(resolve => setTimeout(resolve, 1000))
+    
+  } catch (error) {
+    console.error(`❌ ${path} 页面跳转失败:`, error)
+    console.error('错误详情:', {
+      message: error.message,
+      stack: error.stack,
+      name: error.name
+    })
+    // 返回看板页面
+    await router.push('/board')
+  }
+}
+
+const testComponentLoading = async (path) => {
+  console.log(`\n=== 测试组件加载: ${path} ===`)
+  
+  try {
+    console.log(`开始跳转到 ${path}...`)
+    await router.push(path)
+    console.log(`✅ ${path} 页面跳转成功`)
+    
+    // 等待组件加载
+    await new Promise(resolve => setTimeout(resolve, 2000))
+    
+    // 检查页面内容
+    const pageContent = document.body.innerHTML
+    console.log('页面内容长度:', pageContent.length)
+    console.log('页面是否包含内容:', pageContent.includes('效率分析') || pageContent.includes('任务箱') || pageContent.includes('设置'))
+    
+    // 返回看板页面
+    console.log('返回看板页面...')
+    await router.push('/board')
+    
+  } catch (error) {
+    console.error(`❌ 组件加载测试失败:`, error)
+    await router.push('/board')
+  }
+}
+
 // 初始化数据
 onMounted(async () => {
   try {
     console.log('Board - 开始初始化数据')
-    await teamsStore.loadMyTeams()
+    await teamsStore.loadUserTeams()
     console.log('Board - 团队数据加载完成:', teamsStore.currentTeam)
     
     if (teamsStore.currentTeam) {

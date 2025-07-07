@@ -407,9 +407,24 @@ const handleEditSave = async (taskData) => {
 
 // 初始化数据
 onMounted(async () => {
-  await teamsStore.loadMyTeams()
-  if (teamsStore.currentTeam) {
-    await tasksStore.initialize(teamsStore.currentTeam.id)
+  console.log('Inbox 组件开始初始化')
+  
+  try {
+    console.log('正在加载团队数据...')
+    await teamsStore.loadUserTeams()
+    console.log('团队数据加载完成:', teamsStore.currentTeam)
+    
+    if (teamsStore.currentTeam) {
+      console.log('正在初始化任务数据...')
+      await tasksStore.initialize(teamsStore.currentTeam.id)
+      console.log('任务数据初始化完成')
+    } else {
+      console.log('没有当前团队，使用默认数据')
+    }
+    
+    console.log('Inbox 组件初始化完成')
+  } catch (error) {
+    console.error('Inbox 组件初始化失败:', error)
   }
 })
 </script> 

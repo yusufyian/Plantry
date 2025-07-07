@@ -178,7 +178,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import {
   CheckCircleIcon,
   ArrowUpIcon,
@@ -189,6 +189,8 @@ import {
   ChartBarIcon,
   ChartPieIcon
 } from '@heroicons/vue/24/outline'
+
+console.log('Analytics 组件开始加载')
 
 const teamMembers = ref([
   {
@@ -226,4 +228,9 @@ const getEfficiencyClass = (efficiency) => {
   if (efficiency >= 80) return 'bg-yellow-100 text-yellow-800'
   return 'bg-red-100 text-red-800'
 }
+
+onMounted(() => {
+  console.log('Analytics 组件已挂载')
+  console.log('团队成员数据:', teamMembers.value)
+})
 </script> 
