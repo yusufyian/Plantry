@@ -11,6 +11,11 @@ export const userService = {
     return apiService.post('/auth/register', userData)
   },
   
+  // 演示登录
+  demoLogin: () => {
+    return apiService.post('/auth/demo')
+  },
+  
   // 刷新token
   refreshToken: () => {
     return apiService.post('/auth/refresh')

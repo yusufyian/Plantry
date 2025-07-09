@@ -19,7 +19,7 @@ router.post('/register', asyncHandler(async (req, res) => {
     last_name: Joi.string().min(1).max(50).required(),
     email: Joi.string().email().required(),
     password: Joi.string().min(6).required(),
-    telegram_id: Joi.string().optional()
+    telegram_id: Joi.string().allow(null).optional()
   })
 
   const { error } = registerSchema.validate({ username, first_name, last_name, email, password, telegram_id })
@@ -142,6 +142,16 @@ router.post('/login', asyncHandler(async (req, res) => {
     token
   })
 }))
+
+// 用户登出
+router.post('/logout', (req, res) => {
+  // 在无状态的JWT认证中，服务器端登出主要是为了让客户端清除token。
+  // 如果有token黑名单机制，会在这里将token加入黑名单。
+  // 目前实现下，只需返回成功即可。
+  res.json({
+    message: '登出成功'
+  })
+})
 
 // 演示账户登录
 router.post('/demo', asyncHandler(async (req, res) => {

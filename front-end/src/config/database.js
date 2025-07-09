@@ -11,8 +11,8 @@ export const DATABASE_CONFIG = {
 // API基础配置
 export const API_CONFIG = {
   baseURL: process.env.NODE_ENV === 'production' 
-    ? 'https://api.plantry.com' 
-    : 'http://localhost:3001',
+    ? 'https://api.plantry.com/api' 
+    : 'http://localhost:3001/api',
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json'

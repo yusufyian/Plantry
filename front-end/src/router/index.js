@@ -26,18 +26,6 @@ const routes = [
     meta: { requiresAuth: true }
   },
   {
-    path: '/simple-board',
-    name: 'simple-board',
-    component: () => import('@/views/SimpleBoard.vue'),
-    meta: { requiresAuth: true }
-  },
-  {
-    path: '/minimal-board',
-    name: 'minimal-board',
-    component: () => import('@/views/MinimalBoard.vue'),
-    meta: { requiresAuth: true }
-  },
-  {
     path: '/inbox',
     name: 'inbox',
     component: () => import('@/views/Inbox.vue'),

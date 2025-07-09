@@ -36,11 +36,20 @@ export const useTeamsStore = defineStore('teams', () => {
   const loadUserTeams = async () => {
     loading.value = true
     try {
-      const response = await teamService.getUserTeams()
-      teams.value = response.teams || []
+      console.log('正在加载团队数据...')
+      const response = await teamService.getMyTeams()
+      teams.value = response.data
+      console.log('团队数据加载完成:', this.teams)
+      if (this.teams.length > 0) {
+        setCurrentTeam(this.teams[0].id)
+      }
     } catch (error) {
-      console.warn('Failed to load teams, using mock data:', error)
-      teams.value = mockTeams
+      console.error('Failed to load teams, using mock data:', error)
+      // 使用模拟数据作为后备
+      this.teams = [
+        { id: 'demo-team', name: 'Plantry Demo' }
+      ]
+      this.setCurrentTeam('demo-team')
     } finally {
       loading.value = false
     }

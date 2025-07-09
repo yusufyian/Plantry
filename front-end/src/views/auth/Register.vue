@@ -278,11 +278,33 @@ const isFormValid = computed(() => {
 const handleRegister = async () => {
   loading.value = true
   try {
-    await authStore.register(form.value)
+    const name = form.value.name.trim()
+    const nameParts = name.split('')
+    const lastName = nameParts.length > 0 ? nameParts[0] : ''
+    let firstName = nameParts.length > 1 ? nameParts.slice(1).join('') : ''
+    
+    // 确保firstName不为空，以通过验证
+    if (name && !firstName) {
+      firstName = lastName
+    }
+
+    // 从邮箱生成一个安全的用户名
+    const emailUser = form.value.email.split('@')[0]
+    const username = `${emailUser.replace(/[^a-zA-Z0-9]/g, '')}${Date.now()}`.toLowerCase()
+
+    const userData = {
+      username,
+      first_name: firstName,
+      last_name: lastName,
+      email: form.value.email,
+      password: form.value.password,
+    }
+
+    await authStore.register(userData)
     notificationsStore.success('注册成功，欢迎加入 Plantry！')
     router.push('/')
   } catch (error) {
-    notificationsStore.error(error.message || '注册失败')
+    notificationsStore.error(error.data?.message || '注册失败')
   } finally {
     loading.value = false
   }

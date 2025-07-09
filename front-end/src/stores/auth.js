@@ -40,31 +40,25 @@ export const useAuthStore = defineStore('auth', () => {
       
       return response
     } catch (error) {
-      // 如果API调用失败，回退到演示模式
-      if (credentials.email === 'demo@plantry.com' && credentials.password === 'demo123') {
-        user.value = {
-          id: 'demo-uuid',
-          telegram_id: null,
-          username: 'demo_user',
-          first_name: '演示',
-          last_name: '用户',
-          email: 'demo@plantry.com',
-          phone: null,
-          timezone: 'Asia/Shanghai',
-          language_code: 'zh-CN',
-          avatar_url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=demo',
-          is_active: true,
-          last_seen_at: new Date().toISOString(),
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
-        }
-        
-        token.value = 'demo-token-123'
-        localStorage.setItem('user-token', token.value)
-        localStorage.setItem('user-info', JSON.stringify(user.value))
-        
-        return { user: user.value, token: token.value }
-      }
+      // 登录失败，直接抛出错误
+      throw error
+    } finally {
+      loading.value = false
+    }
+  }
+  
+  const demoLogin = async () => {
+    loading.value = true
+    try {
+      const response = await userService.demoLogin()
+      
+      user.value = response.user
+      token.value = response.token
+      localStorage.setItem('user-token', token.value)
+      localStorage.setItem('user-info', JSON.stringify(user.value))
+      
+      return response
+    } catch (error) {
       throw error
     } finally {
       loading.value = false
@@ -79,7 +73,8 @@ export const useAuthStore = defineStore('auth', () => {
         username: userData.username,
         first_name: userData.first_name,
         last_name: userData.last_name,
-                email: userData.email,
+        email: userData.email,
+        password: userData.password,
         phone: userData.phone || null,
         timezone: userData.timezone || 'UTC',
         language_code: userData.language_code || 'zh-CN',
@@ -93,29 +88,8 @@ export const useAuthStore = defineStore('auth', () => {
       
       return response
     } catch (error) {
-      // 如果API调用失败，回退到演示模式
-      user.value = {
-        id: `demo-${Date.now()}`,
-        telegram_id: null,
-        username: userData.username,
-        first_name: userData.first_name,
-        last_name: userData.last_name,
-        email: userData.email,
-        phone: userData.phone || null,
-        timezone: userData.timezone || 'Asia/Shanghai',
-        language_code: userData.language_code || 'zh-CN',
-        avatar_url: `https://api.dicebear.com/7.x/avataaars/svg?seed=${userData.email}`,
-        is_active: true,
-        last_seen_at: new Date().toISOString(),
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
-      }
-      
-      token.value = `demo-token-${Date.now()}`
-      localStorage.setItem('user-token', token.value)
-      localStorage.setItem('user-info', JSON.stringify(user.value))
-      
-      return { user: user.value, token: token.value }
+      // 注册失败，直接抛出错误
+      throw error
     } finally {
       loading.value = false
     }
@@ -181,35 +155,9 @@ export const useAuthStore = defineStore('auth', () => {
       user.value = userData
       localStorage.setItem('user-info', JSON.stringify(user.value))
     } catch (error) {
-      console.warn('Auth - refreshUserData: 刷新用户数据失败:', error)
-      console.log('Auth - refreshUserData: 错误详情:', {
-        message: error.message,
-        status: error.status,
-        data: error.data
-      })
-      
-      // 如果是演示token，使用演示数据
-      if (token.value === 'demo-token-123' || token.value.startsWith('demo-token-')) {
-        console.log('Auth - refreshUserData: 使用演示数据')
-        const demoUser = {
-          id: 'demo-uuid',
-          telegram_id: null,
-          username: 'demo_user',
-          first_name: '演示',
-          last_name: '用户',
-          email: 'demo@plantry.com',
-          phone: null,
-          timezone: 'Asia/Shanghai',
-          language_code: 'zh-CN',
-          avatar_url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=demo',
-          is_active: true,
-          last_seen_at: new Date().toISOString(),
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
-        }
-        user.value = demoUser
-        localStorage.setItem('user-info', JSON.stringify(user.value))
-      }
+      console.error('Auth - refreshUserData: 刷新用户数据失败:', error)
+      // 如果刷新失败，可能是token过期，引导用户重新登录
+      logout()
     }
   }
   
@@ -227,6 +175,7 @@ export const useAuthStore = defineStore('auth', () => {
     isAuthenticated,
     userInfo,
     login,
+    demoLogin,
     register,
     logout,
     updateProfile,

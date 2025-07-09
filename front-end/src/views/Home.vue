@@ -71,6 +71,7 @@
               <div 
                 v-for="task in pendingInboxTasks.slice(0, 3)" 
                 :key="task.id"
+                v-if="task && task.extractedTask"
                 class="p-3 bg-yellow-50 border border-yellow-200 rounded-lg"
               >
                 <p class="text-sm text-gray-600 mb-2">原始消息：{{ task.originalMessage }}</p>

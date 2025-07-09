@@ -15,11 +15,12 @@ CREATE TYPE extraction_confidence AS ENUM ('high', 'medium', 'low');
 -- 用户表
 CREATE TABLE users (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    telegram_id BIGINT UNIQUE NOT NULL,
+    telegram_id BIGINT UNIQUE,
     username VARCHAR(255),
     first_name VARCHAR(255),
     last_name VARCHAR(255),
     email VARCHAR(255) UNIQUE,
+    password_hash VARCHAR(255),
     phone VARCHAR(50),
     timezone VARCHAR(100) DEFAULT 'UTC',
     language_code VARCHAR(10) DEFAULT 'zh-CN',

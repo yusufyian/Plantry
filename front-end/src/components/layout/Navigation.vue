@@ -122,8 +122,6 @@ const pendingCount = computed(() => {
 const navItems = [
   { name: '首页', path: '/', icon: HomeIcon },
   { name: '看板', path: '/board', icon: RectangleStackIcon },
-  { name: '简化看板', path: '/simple-board', icon: RectangleStackIcon },
-  { name: '最小化看板', path: '/minimal-board', icon: RectangleStackIcon },
   { name: '任务箱', path: '/inbox', icon: InboxIcon },
   { name: '分析', path: '/analytics', icon: ChartBarIcon },
   { name: 'Telegram', path: '/telegram', icon: ChatBubbleLeftRightIcon }
@@ -143,8 +141,8 @@ const toggleNotifications = () => {
   showUserMenu.value = false
 }
 
-const handleLogout = () => {
-  authStore.logout()
+const handleLogout = async () => {
+  await authStore.logout()
   router.push('/login')
 }
 

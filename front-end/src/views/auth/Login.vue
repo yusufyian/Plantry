@@ -52,6 +52,22 @@
           </p>
         </div>
 
+        <button 
+          @click="handleDemoLogin"
+          :disabled="authStore.loading"
+          class="w-full btn-secondary mt-2"
+        >
+          <span v-if="!authStore.loading">体验 Demo</span>
+          <span v-else>正在进入...</span>
+        </button>
+
+        <p class="text-center text-sm text-gray-500 mt-6">
+          还没有账户？
+          <router-link to="/register" class="font-medium text-green-600 hover:text-green-700">
+              立即注册
+            </router-link>
+        </p>
+
         <div class="mt-8">
           <!-- 演示账户提示 -->
           <div class="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
@@ -203,13 +219,22 @@ const form = ref({
 const handleLogin = async () => {
   loading.value = true
   try {
-    await authStore.login(form.value)
+    await authStore.login({ email: form.value.email, password: form.value.password })
     notificationsStore.success('登录成功，欢迎回来！')
     router.push('/')
   } catch (error) {
     notificationsStore.error(error.message || '登录失败')
   } finally {
     loading.value = false
+  }
+}
+
+const handleDemoLogin = async () => {
+  try {
+    await authStore.demoLogin()
+    router.push('/')
+  } catch (error) {
+    errorMessage.value = error.data?.message || '进入 Demo 失败，请稍后重试'
   }
 }
 </script> 
